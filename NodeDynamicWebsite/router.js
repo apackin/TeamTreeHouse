@@ -1,14 +1,34 @@
 var Profile = require("./profile.js");
 var renderer = require('./renderer.js');
+var querystring = require('querystring')
+
+var commonHeaders = {'Content-Type': 'text/html'};
 
 //Handle the HTTP route GET / and POST / i.e. Home
 function home(req, res){
 	if(req.url === "/"){
-		res.writeHead(200, {'Content-Type': 'text/plain'});
-		renderer.view("header", {}, res);
-		renderer.view("search", {}, res);
-		renderer.view("footer", {}, res);
-		res.end();
+		if(req.method.toLowerCase() === "get") {
+			//show search
+			res.writeHead(200, commonHeaders);
+			renderer.view("header", {}, res);
+			renderer.view("search", {}, res);
+			renderer.view("footer", {}, res);
+			res.end();
+		} else {
+
+			//get the post data from body
+			req.on("data", function(postBody){
+				//get the post data from the body
+				var query = querystring.parse(postBody.toString());
+				// turn the batch into a string; string into object
+				res.writeHead(303, {'Location': "/" + query.username});
+				// 303 status code redirects, location sets where it goes.
+				res.end();
+			});
+			//extract username
+
+			// and send it to /:username
+		}
 	}
 }
 
@@ -16,7 +36,7 @@ function home(req, res){
 function user(req, res) {
 	var username = req.url.replace('/', '');
 	if(username.length > 0) {
-		res.writeHead(200, {'Content-Type': 'text/plain'});
+		res.writeHead(200, commonHeaders);
 		renderer.view("header", {}, res);
 
 			//get json from Treehouse 

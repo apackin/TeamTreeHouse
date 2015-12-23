@@ -7,8 +7,6 @@ function mergeValues(values, content) {
 	}
 	return content;
 		// replace the keys with content
-
-
 }
 
 
@@ -20,10 +18,6 @@ function view(templateName, values, res) {
 	fileContents = mergeValues(values, fileContents);
 	///Write out to the response		
 	res.write(fileContents);
-
-
-
-
 }
 
 
